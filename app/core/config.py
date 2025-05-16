@@ -18,6 +18,10 @@ class SettingManager:
     TZ: str = "Asia/Shanghai"
     # 开发者模式
     DEBUG: bool = False
+    # 替换旧字符串
+    PATH_REPLACE_OLD: str | None = None
+    # 替换新字符串
+    PATH_REPLACE_NEW: str | None = None
 
     def __init__(self) -> None:
         """
@@ -43,7 +47,10 @@ class SettingManager:
         加载模式
         """
         with self.CONFIG.open(mode="r", encoding="utf-8") as file:
-            is_dev = safe_load(file).get("Settings", {}).get("DEV", False)
+            configSettings = safe_load(file).get("Settings", {})
+            is_dev = configSettings.get("DEV", False)
+            self.PATH_REPLACE_OLD = configSettings.get("path_replace_old")
+            self.PATH_REPLACE_NEW = configSettings.get("path_replace_new")
 
         self.DEBUG = is_dev
 

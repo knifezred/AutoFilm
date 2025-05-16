@@ -5,7 +5,7 @@ from re import compile as re_compile
 
 from aiofile import async_open
 
-from app.core import logger
+from app.core import settings, logger
 from app.utils import RequestUtils
 from app.extensions import VIDEO_EXTS, SUBTITLE_EXTS, IMAGE_EXTS, NFO_EXTS
 from app.modules.alist import AlistClient, AlistPath
@@ -185,6 +185,8 @@ class Alist2Strm:
 
         logger.debug(f"开始处理 {local_path}")
         if local_path.suffix == ".strm":
+            if settings.PATH_REPLACE_OLD and settings.PATH_REPLACE_NEW:
+                content = content.replace(settings.PATH_REPLACE_OLD, settings.PATH_REPLACE_NEW)
             async with async_open(local_path, mode="w", encoding="utf-8") as file:
                 await file.write(content)
             logger.info(f"{local_path.name} 创建成功")
